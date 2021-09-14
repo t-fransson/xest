@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Introduction &#8212; The X-ray (emission) spectroscopy toolbox</title>
+    <title>Descriptors &#8212; The X-ray (emission) spectroscopy toolbox</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet" />
   <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -53,7 +53,8 @@
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Detector corrections" href="detector.html" />
+    <link rel="next" title="Constructing final spectra" href="corr_spec.html" />
+    <link rel="prev" title="Sorting for hits" href="hit_sort.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
     
@@ -84,8 +85,8 @@
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
     <div class="bd-toc-item active">
         <ul class="nav bd-sidenav">
- <li class="toctree-l1 current">
-  <a class="reference internal" href="#">
+ <li class="toctree-l1">
+  <a class="reference internal" href="intro.html">
    Introduction
   </a>
  </li>
@@ -112,7 +113,7 @@
   Data analysis
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="raw_spec.html">
    Isolating inelastic signal
@@ -123,8 +124,8 @@
    Sorting for hits
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="descriptors.html">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
    Descriptors
   </a>
  </li>
@@ -196,7 +197,7 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/docs/intro.md"><button type="button"
+        <a class="dropdown-buttons" href="../_sources/docs/descriptors.md"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
@@ -216,7 +217,7 @@
                 data-toggle="tooltip" data-placement="left" title="Source repository"><i
                     class="fab fa-github"></i>repository</button></a>
         <a class="issues-button"
-            href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2Fdocs/intro.html&body=Your%20issue%20content%20here."><button
+            href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2Fdocs/descriptors.html&body=Your%20issue%20content%20here."><button
                 type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
                 title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
         
@@ -243,19 +244,41 @@
             <nav id="bd-toc-nav">
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#experimental-protocol">
-   Experimental protocol
+  <a class="reference internal nav-link" href="#difference-spectra">
+   Difference spectra
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#von-hamos-spectrometer">
-   von Hamos spectrometer
+  <a class="reference internal nav-link" href="#first-moment">
+   First moment
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#biochem2">
-   biochem2?
+  <a class="reference internal nav-link" href="#fwhm">
+   FWHM
   </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#iad">
+   IAD
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#error-bar-estimation">
+   Error bar estimation
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#boot-strap">
+     Boot-strap
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#fit-function">
+     Fit function
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -268,34 +291,32 @@
         
               <div>
                 
-  <div class="section" id="introduction">
-<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<p>Discussed here is the analysis of… Lots already discussed in <span id="id1">[<a class="reference internal" href="refs.html#id3">Feal18</a>]</span>.</p>
-<div class="section" id="experimental-protocol">
-<h2>Experimental protocol<a class="headerlink" href="#experimental-protocol" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="descriptors">
+<h1>Descriptors<a class="headerlink" href="#descriptors" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="difference-spectra">
+<h2>Difference spectra<a class="headerlink" href="#difference-spectra" title="Permalink to this headline">¶</a></h2>
 <p>foo</p>
-<div class="figure align-center" id="fig-xas">
-<a class="reference internal image-reference" href="../_images/setup.png"><img alt="../_images/setup.png" src="../_images/setup.png" style="width: 500.0px; height: 392.5px;" /></a>
-<p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text">Experimental set-up.</span><a class="headerlink" href="#fig-xas" title="Permalink to this image">¶</a></p>
 </div>
-</div>
-<div class="section" id="von-hamos-spectrometer">
-<h2>von Hamos spectrometer<a class="headerlink" href="#von-hamos-spectrometer" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="first-moment">
+<h2>First moment<a class="headerlink" href="#first-moment" title="Permalink to this headline">¶</a></h2>
 <p>bar</p>
 </div>
-<div class="section" id="biochem2">
-<h2>biochem2?<a class="headerlink" href="#biochem2" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p>want to go into background subtraction differences (and impact on first moments, comparisons to other groups)</p></li>
-<li><p>maybe population analysis</p></li>
-<li><p>maybe kinetics models</p></li>
-</ul>
+<div class="section" id="fwhm">
+<h2>FWHM<a class="headerlink" href="#fwhm" title="Permalink to this headline">¶</a></h2>
+<p>foobar</p>
 </div>
-<div class="toctree-wrapper compound">
+<div class="section" id="iad">
+<h2>IAD<a class="headerlink" href="#iad" title="Permalink to this headline">¶</a></h2>
+<p>barfoo</p>
 </div>
-<div class="toctree-wrapper compound">
+<div class="section" id="error-bar-estimation">
+<h2>Error bar estimation<a class="headerlink" href="#error-bar-estimation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="boot-strap">
+<h3>Boot-strap<a class="headerlink" href="#boot-strap" title="Permalink to this headline">¶</a></h3>
 </div>
-<div class="toctree-wrapper compound">
+<div class="section" id="fit-function">
+<h3>Fit function<a class="headerlink" href="#fit-function" title="Permalink to this headline">¶</a></h3>
+</div>
 </div>
 </div>
 
@@ -324,7 +345,8 @@
         
         <div class='prev-next-bottom'>
             
-    <a class='right-next' id="next-link" href="detector.html" title="next page">Detector corrections</a>
+    <a class='left-prev' id="prev-link" href="hit_sort.html" title="previous page">Sorting for hits</a>
+    <a class='right-next' id="next-link" href="corr_spec.html" title="next page">Constructing final spectra</a>
 
         </div>
         
