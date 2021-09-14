@@ -1,18 +1,30 @@
-# Home
+# Introduction
 
-## Next-generation quantum chemistry software for molecular properties
+Discussed here is the analysis of... Lots already discussed in {cite}`xesdiag2018`.
 
-VeloxChem {cite}`veloxchem` is a Python-based open source quantum chemistry software developed for the calculation of molecular properties and simulation of a variety of spectroscopies.
+## Experimental protocol
 
-VeloxChem features interactive program access through Jupyter notebooks as well as large-scale calculations in contemporary high-performance computing (HPC) environments. A comprehensive presentation of the former desktop aspect is provided in the [eChem](https://kthpanor.github.io/echem) book and this manual will focus on the latter HPC aspect.
+foo
 
-**Key capabilities**
+```{figure} /imgs/setup.png
+---
+scale: 50%
+name: fig-xas
+align: center
+---
+Experimental set-up.
+```
 
-- Kohn–Sham Density Functional Theory (DFT)
-- Time-dependent DFT (TDDFT)
-- Optical and X-ray absorption
-- Electric circular dichroism (ECD)
-- Polarizabilities and dispersion coefficients
-- Complex polarization propagator (CPP)
-- Response theory for pulses
+## von Hamos spectrometer
+
+bar
+
+## biochem2?
+
+- want to go into background subtraction differences (and impact on first moments, comparisons to other groups)
+
+- maybe population analysis
+
+- maybe kinetics models
+
 

@@ -4,8 +4,18 @@
 format: jb-book
 root: docs/intro
 parts:
-- caption: Getting started
+- caption: Reducing raw data
   chapters:
-  - file: docs/part1
-  - file: docs/part2
-  
+  - file: docs/detector
+  - file: docs/droplet
+- caption: Data analysis
+  chapters:
+  - file: docs/raw_spec
+  - file: docs/hit_sort
+  - file: docs/descriptors
+  - file: docs/corr_spec
+  - file: docs/onsite
+  - file: docs/analysis
+- caption: References
+  chapters:
+  - file: docs/refs

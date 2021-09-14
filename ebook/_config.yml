@@ -1,8 +1,8 @@
 # Book settings
 # Learn more at https://jupyterbook.org/customize/config.html
 
-title: xest.py
-author: The xest.py team
+title: The X-ray (emission) spectroscopy toolbox
+author: the xest team
 logo: logo.png
 
 # Force re-execution of notebooks on each build.
