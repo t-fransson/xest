@@ -11,9 +11,9 @@ parts:
 - caption: Data analysis
   chapters:
   - file: docs/raw_spec
+  - file: docs/corr_spec
   - file: docs/hit_sort
   - file: docs/descriptors
-  - file: docs/corr_spec
   - file: docs/onsite
   - file: docs/analysis
 - caption: References
