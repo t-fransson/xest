@@ -11,6 +11,13 @@ Typical protocols and scripts to run on-site.
 	- img
 	- spat proj
 	- energy proj (calibrated)
+- Tracking properties
+    - first moment etc
+- Checking for other issues (typically detector-related)
+    - multi-hits
+    - dead/too active pixels
+    - inconsistent gain
+    - ...
 
 ## Tracking spatial distribution
 

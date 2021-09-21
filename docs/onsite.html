@@ -43,6 +43,8 @@
     <script src="../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -54,7 +56,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Tracking chemical reactions" href="analysis.html" />
-    <link rel="prev" title="Constructing final spectra" href="corr_spec.html" />
+    <link rel="prev" title="Descriptors" href="descriptors.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
     
@@ -120,6 +122,11 @@
   </a>
  </li>
  <li class="toctree-l1">
+  <a class="reference internal" href="corr_spec.html">
+   Constructing final spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="hit_sort.html">
    Sorting for hits
   </a>
@@ -127,11 +134,6 @@
  <li class="toctree-l1">
   <a class="reference internal" href="descriptors.html">
    Descriptors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="corr_spec.html">
-   Constructing final spectra
   </a>
  </li>
  <li class="toctree-l1 current active">
@@ -283,6 +285,19 @@
 <li><p>energy proj (calibrated)</p></li>
 </ul>
 </li>
+<li><p>Tracking properties</p>
+<ul>
+<li><p>first moment etc</p></li>
+</ul>
+</li>
+<li><p>Checking for other issues (typically detector-related)</p>
+<ul>
+<li><p>multi-hits</p></li>
+<li><p>dead/too active pixels</p></li>
+<li><p>inconsistent gain</p></li>
+<li><p>…</p></li>
+</ul>
+</li>
 </ul>
 <div class="section" id="tracking-spatial-distribution">
 <h2>Tracking spatial distribution<a class="headerlink" href="#tracking-spatial-distribution" title="Permalink to this headline">¶</a></h2>
@@ -319,7 +334,7 @@
         
         <div class='prev-next-bottom'>
             
-    <a class='left-prev' id="prev-link" href="corr_spec.html" title="previous page">Constructing final spectra</a>
+    <a class='left-prev' id="prev-link" href="descriptors.html" title="previous page">Descriptors</a>
     <a class='right-next' id="next-link" href="analysis.html" title="next page">Tracking chemical reactions</a>
 
         </div>

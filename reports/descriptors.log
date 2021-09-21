@@ -1,0 +1,95 @@
+Traceback (most recent call last):
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/jupyter_cache/executors/utils.py", line 56, in single_nb_execution
+    record_timing=False,
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 1087, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/util.py", line 74, in wrapped
+    return just_run(coro(*args, **kwargs))
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/util.py", line 53, in just_run
+    return loop.run_until_complete(coro)
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/asyncio/base_events.py", line 587, in run_until_complete
+    return future.result()
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 541, in async_execute
+    cell, index, execution_count=self.code_cells_executed + 1
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 832, in async_execute_cell
+    self._check_raise_for_error(cell, exec_reply)
+  File "/home/thomas/Notebook/anaconda/lib/python3.7/site-packages/nbclient/client.py", line 740, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply['content'])
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+########################
+# smooth spectra and
+#     difference spectra
+########################
+def smooth_spec(xaxis,raw,bstep,xstep):
+    xmin = Emin - 2.5*bstep; xmax = Emax + 2.5*bstep
+    bins = np.zeros((int((xmax - xmin)/ bstep)))
+    for i in np.arange(len(bins)):
+        bins[i] = xmin + i*bstep
+    xes = np.zeros((len(bins))); inb = np.zeros((len(bins)))
+    for i in np.arange(len(xaxis)):
+        for j in np.arange(len(bins)):
+            if (xaxis[i] > (bins[j] - bstep/2)) & (xaxis[i] <= (bins[j] + bstep/2)):
+                xes[j] = raw[i] + xes[j]; inb[j] = inb[j] + 1
+    for i in np.arange(len(inb)):
+        if inb[i] == 0:
+            xes[i] = xes[i-1]; inb[i] = inb[i-1]
+    xes = xes / inb
+    spline = interp1d(bins, xes, kind='cubic')
+    xnew = np.arange(Emin-25*xstep,Emax+25*xstep,xstep)
+    return xnew,spline(xnew) 
+################
+Emin,Emax = 6483,6497      # for area normalization
+bstep = 0.75; xstep = 0.01 # for smoothing        
+plt.figure(figsize=(12,4))
+################
+plt.subplot(131)
+plt.title('Raw')
+imin,imax = 0,0
+for i in np.arange(len(xaxis)):
+    if xaxis[i] < Emin:   imin = i-1
+    elif xaxis[i] < Emax: imax = i+1
+plt.plot(xaxis,spec0F/sum(spec0F[imin:imax])); plt.plot(xaxis,spec1F/sum(spec1F[imin:imax]))
+plt.plot(xaxis,spec2F/sum(spec2F[imin:imax])); plt.plot(xaxis,spec3F/sum(spec3F[imin:imax]))
+plt.plot(xaxis,3.0*(spec2F/sum(spec2F[imin:imax])-spec0F/sum(spec0F[imin:imax])))
+plt.plot([Emin,Emax],[0,0],'k--')
+plt.legend(('0F','1F','2F','3F','2F - 0F (x3)'),loc='upper left',fontsize=10)
+Imax = np.max(spec0F/sum(spec0F[imin:imax]))
+plt.xlim((Emin,Emax)); plt.ylim((-0.35*Imax,1.1*Imax))
+plt.subplot(133)
+plt.title('0F')
+plt.plot(xaxis,(imax-imin)*spec0F/sum(spec0F[imin:imax]),'b')
+################
+plt.subplot(132)
+plt.title('Smooth')
+x0F,y0F = smooth_spec(xaxis,spec0F,bstep,xstep); x1F,y1F = smooth_spec(xaxis,spec1F,bstep,xstep)
+x2F,y2F = smooth_spec(xaxis,spec2F,bstep,xstep); x3F,y3F = smooth_spec(xaxis,spec3F,bstep,xstep)
+for i in np.arange(len(x0F)):
+    if x0F[i] < Emin:   imin = i-1
+    elif x0F[i] < Emax: imax = i+1
+plt.plot(x0F,y0F/sum(y0F[imin:imax])); plt.plot(x1F,y1F/sum(y1F[imin:imax]))
+plt.plot(x2F,y2F/sum(y2F[imin:imax])); plt.plot(x3F,y3F/sum(y3F[imin:imax]))
+plt.plot(x0F,3.0*(y2F/sum(y2F[imin:imax])-y0F/sum(y0F[imin:imax])))
+plt.plot([Emin,Emax],[0,0],'k--')
+Imax = np.max(y0F/sum(y0F[imin:imax]))
+plt.xlim((Emin,Emax)); plt.ylim((-0.35*Imax,1.1*Imax))
+plt.subplot(133)
+plt.plot(x0F,(imax-imin)*y0F/sum(y0F[imin:imax]),'r')
+plt.xlim((Emin,Emax))
+################
+plt.tight_layout()
+plt.show()
+------------------
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mNameError[0m                                 Traceback (most recent call last)
+[0;32m<ipython-input-1-907923ce25f1>[0m in [0;36m<module>[0;34m[0m
+[1;32m     23[0m [0mEmin[0m[0;34m,[0m[0mEmax[0m [0;34m=[0m [0;36m6483[0m[0;34m,[0m[0;36m6497[0m      [0;31m# for area normalization[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     24[0m [0mbstep[0m [0;34m=[0m [0;36m0.75[0m[0;34m;[0m [0mxstep[0m [0;34m=[0m [0;36m0.01[0m [0;31m# for smoothing[0m[0;34m[0m[0;34m[0m[0m
+[0;32m---> 25[0;31m [0mplt[0m[0;34m.[0m[0mfigure[0m[0;34m([0m[0mfigsize[0m[0;34m=[0m[0;34m([0m[0;36m12[0m[0;34m,[0m[0;36m4[0m[0;34m)[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m     26[0m [0;31m################[0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     27[0m [0mplt[0m[0;34m.[0m[0msubplot[0m[0;34m([0m[0;36m131[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+
+[0;31mNameError[0m: name 'plt' is not defined
+NameError: name 'plt' is not defined
+

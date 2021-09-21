@@ -43,6 +43,8 @@
     <script src="../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -119,6 +121,11 @@
   </a>
  </li>
  <li class="toctree-l1">
+  <a class="reference internal" href="corr_spec.html">
+   Constructing final spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="hit_sort.html">
    Sorting for hits
   </a>
@@ -126,11 +133,6 @@
  <li class="toctree-l1">
   <a class="reference internal" href="descriptors.html">
    Descriptors
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="corr_spec.html">
-   Constructing final spectra
   </a>
  </li>
  <li class="toctree-l1">
@@ -248,13 +250,18 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#von-hamos-spectrometer">
-   von Hamos spectrometer
+  <a class="reference internal nav-link" href="#xes">
+   XES
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#biochem2">
-   biochem2?
+  <a class="reference internal nav-link" href="#spectrometer">
+   Spectrometer
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#include-ps-ii-analysis">
+   Include PS II analysis?
   </a>
  </li>
 </ul>
@@ -268,29 +275,35 @@
         
               <div>
                 
-  <div class="section" id="introduction">
+  <!-- #raw -->
+<div class="section" id="introduction">
 <h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<p>Discussed here is the analysis of… Lots already discussed in <span id="id1">[<a class="reference internal" href="refs.html#id3">Feal18</a>]</span>.</p>
+<p>Discussed here is the analysis of our protocol for (rapid) analysis of XES data. Can be generalized to other spectroscopies as well.</p>
+<p>Lots already discussed in <span id="id1">[<a class="reference internal" href="refs.html#id3">Feal18</a>]</span>.</p>
 <div class="section" id="experimental-protocol">
 <h2>Experimental protocol<a class="headerlink" href="#experimental-protocol" title="Permalink to this headline">¶</a></h2>
-<p>foo</p>
+<p>Below is the simultaneous XES/XRD protocol often used. Maybe use new figures - clearer and without copyright.</p>
 <div class="figure align-center" id="fig-xas">
-<a class="reference internal image-reference" href="../_images/setup.png"><img alt="../_images/setup.png" src="../_images/setup.png" style="width: 500.0px; height: 392.5px;" /></a>
-<p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text">Experimental set-up.</span><a class="headerlink" href="#fig-xas" title="Permalink to this image">¶</a></p>
+<a class="reference internal image-reference" href="../_images/setup.png"><img alt="../_images/setup.png" src="../_images/setup.png" style="width: 550.0px; height: 431.75000000000006px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text">Simultaneous XES and XRD.</span><a class="headerlink" href="#fig-xas" title="Permalink to this image">¶</a></p>
 </div>
 </div>
-<div class="section" id="von-hamos-spectrometer">
-<h2>von Hamos spectrometer<a class="headerlink" href="#von-hamos-spectrometer" title="Permalink to this headline">¶</a></h2>
-<p>bar</p>
+<div class="section" id="xes">
+<h2>XES<a class="headerlink" href="#xes" title="Permalink to this headline">¶</a></h2>
+<p>MO diagrams?</p>
 </div>
-<div class="section" id="biochem2">
-<h2>biochem2?<a class="headerlink" href="#biochem2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="spectrometer">
+<h2>Spectrometer<a class="headerlink" href="#spectrometer" title="Permalink to this headline">¶</a></h2>
+<p>Figure on von Hamos</p>
+</div>
+<div class="section" id="include-ps-ii-analysis">
+<h2>Include PS II analysis?<a class="headerlink" href="#include-ps-ii-analysis" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>want to go into background subtraction differences (and impact on first moments, comparisons to other groups)</p></li>
-<li><p>maybe population analysis</p></li>
-<li><p>maybe kinetics models</p></li>
+<li><p>Biochem2</p></li>
+<li><p>Background subtraction differences (and impact on first moments, comparisons to other groups)</p></li>
+<li><p>Maybe population analysis</p></li>
 </ul>
-</div>
+<!-- #endraw --></div>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">

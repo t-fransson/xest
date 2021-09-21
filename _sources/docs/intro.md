@@ -1,30 +1,36 @@
+<!-- #raw -->
 # Introduction
 
-Discussed here is the analysis of... Lots already discussed in {cite}`xesdiag2018`.
+Discussed here is the analysis of our protocol for (rapid) analysis of XES data. Can be generalized to other spectroscopies as well.
+
+Lots already discussed in {cite}`xesdiag2018`.
 
 ## Experimental protocol
 
-foo
+Below is the simultaneous XES/XRD protocol often used. Maybe use new figures - clearer and without copyright.
 
 ```{figure} /imgs/setup.png
 ---
-scale: 50%
+scale: 55%
 name: fig-xas
 align: center
 ---
-Experimental set-up.
+Simultaneous XES and XRD.
 ```
 
-## von Hamos spectrometer
+## XES
 
-bar
+MO diagrams?
 
-## biochem2?
+## Spectrometer
 
-- want to go into background subtraction differences (and impact on first moments, comparisons to other groups)
+Figure on von Hamos
 
-- maybe population analysis
+## Include PS II analysis?
 
-- maybe kinetics models
+- Biochem2
 
+- Background subtraction differences (and impact on first moments, comparisons to other groups)
 
+- Maybe population analysis
+<!-- #endraw -->
