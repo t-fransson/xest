@@ -19,6 +19,10 @@ Typical protocols and scripts to run on-site.
     - inconsistent gain
     - ...
 
+```{note}
+Margaret: Under 'on-site analysis', could mention significance/explanation of darks/pedestals. I wonder if it would eventually be worthwhile to include the code Clemens has for processing our own pedestals in case the accelerator folks don't get to it...
+```
+
 ## Tracking spatial distribution
 
 foo
