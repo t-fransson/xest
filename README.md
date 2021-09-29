@@ -2,7 +2,7 @@
 # Compiled page
 https://t-fransson.github.io/xest/docs/intro.html
 
-# Notes meeting 29/9
+# Notes meeting 28/9
 
 - Contact techtransfer and see if this is relevant
 - Involve Roberto (and potentially other beamline people)
