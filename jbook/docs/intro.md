@@ -5,10 +5,13 @@ Discussed here is the analysis of our protocol for (rapid) analysis of XES data.
 
 ## Experimental protocol
 Below is the simultaneous XES/XRD protocol often used. Maybe use new figures - clearer and without copyright.
+
 ```{figure} /imgs/setup.png
+---
 scale: 55%
 name: fig-xas
 align: center
+---
 Simultaneous XES and XRD.
 ```
 

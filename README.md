@@ -1,5 +1,18 @@
+<!-- #region -->
 # Compiled page
 https://t-fransson.github.io/xest/docs/intro.html
+
+# Notes meeting 29/9
+
+- Contact techtransfer and see if this is relevant
+- Involve Roberto (and potentially other beamline people)
+- Make it both for synchrotron and XFEL (make it relatively agnostic to source - just need data in the correct format)
+- Currently for XES, but can expand...
+- Decide on where to put our production versions
+- Uncertain on journal (J. Sync. Rad.?)
+- Including real (practice) data ok
+
+
 
 # Some commands
 
@@ -28,3 +41,4 @@ The file `references.bib` in the top directory is a regular BIBTEX file. Add you
 ```
 
 Multiple lists of references are possible but not yet propoerly implmented.
+<!-- #endregion -->
