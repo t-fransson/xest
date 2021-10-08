@@ -8,7 +8,7 @@ First, one may study the evolution of a sample by subtracting it from a referenc
 
 ## First moment
 
-This parameter may be used to track changes in the center-of-mass. It's a nice descriptor for very dilute systems, or a system with low signal levels, as statistics are computed over the entire spectra. As a result, it will be much less sensitive to noise compared to other parameters. 
+This parameter may be used to track changes in the center-of-mass. It's a nice descriptor for very dilute systems, or systems with low signal levels, as statistics are computed over the entire spectra. As a result, it will be much less sensitive to noise compared to other parameters. 
 
 ## FWHM
 
