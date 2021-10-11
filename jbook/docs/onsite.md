@@ -1,4 +1,4 @@
-# On-site analysis
+# Typical on-site analysis
 
 Typical protocols and scripts to run on-site.
 
