@@ -55,7 +55,7 @@
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Detector corrections" href="detector.html" />
+    <link rel="next" title="Measurement and detector corrections" href="detector.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
     
@@ -100,12 +100,12 @@
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="detector.html">
-   Detector corrections
+   Measurement and detector corrections
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="droplet.html">
-   Droplet reconstruction
+   Droplet reconstruction scheme
   </a>
  </li>
 </ul>
@@ -117,27 +117,32 @@
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="raw_spec.html">
-   Isolating inelastic signal
+   Extracting raw spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="corr_spec.html">
-   Constructing final spectra
+   Correction of spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="fitting.html">
+   Smoothing and curve fitting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="hit_sort.html">
-   Sorting for hits
+   Sorting for sample hits
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="descriptors.html">
-   Descriptors
+   Spectrum descriptors for analysis
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="onsite.html">
-   On-site analysis
+   Typical on-site analysis
   </a>
  </li>
  <li class="toctree-l1">
@@ -278,7 +283,7 @@
   <!-- #raw -->
 <div class="section" id="introduction">
 <h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<p>Discussed here is the analysis of our protocol for (rapid) analysis of XES data. Can be generalized to other spectroscopies as well. Lots already discussed in <span id="id1">[<a class="reference internal" href="refs.html#id3">Feal18</a>]</span>.</p>
+<p>Discussed here is the analysis of our protocol for (rapid) analysis of XES data, tailored to be for XFEL experiments. Can be generalized to other spectroscopies as well. Lots of material already discussed in <span id="id1">[<a class="reference internal" href="refs.html#id3">Feal18</a>]</span>, but there without any real demonstration or (illustrated) extensive testing.</p>
 <div class="section" id="experimental-protocol">
 <h2>Experimental protocol<a class="headerlink" href="#experimental-protocol" title="Permalink to this headline">¶</a></h2>
 <p>Below is the simultaneous XES/XRD protocol often used. Maybe use new figures - clearer and without copyright.</p>
@@ -289,11 +294,11 @@
 </div>
 <div class="section" id="xes">
 <h2>XES<a class="headerlink" href="#xes" title="Permalink to this headline">¶</a></h2>
-<p>MO diagrams?</p>
+<p>MO diagrams and sensitivity.</p>
 </div>
 <div class="section" id="spectrometer">
 <h2>Spectrometer<a class="headerlink" href="#spectrometer" title="Permalink to this headline">¶</a></h2>
-<p>Figure on von Hamos</p>
+<p>Figure on description of von Hamos.</p>
 </div>
 <div class="section" id="include-ps-ii-analysis">
 <h2>Include PS II analysis?<a class="headerlink" href="#include-ps-ii-analysis" title="Permalink to this headline">¶</a></h2>
@@ -304,14 +309,13 @@
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Margaret: Under ‘PSII Analysis’ in introduction, I wonder if in addition to linking to PSII article, we could include a very brief overview of PSII, Kok Cycle, expected oxidation state changes with flash etc. just to prime somebody who has very little background of our example system, so they know what a flash state is,….even though the toolbox can be generalized to any sample</p>
+<p>Margaret:</p>
+<ul class="simple">
+<li><p>Under ‘PSII Analysis’ in introduction, I wonder if in addition to linking to PSII article, we could include a very brief overview of PSII, Kok Cycle, expected oxidation state changes with flash etc. just to prime somebody who has very little background of our example system, so they know what a flash state is,….even though the toolbox can be generalized to any sample</p></li>
+<li><p>I wonder if under references, we could include an ‘additional resources’ section in which we link to articles for more detail about XES or Von Hamos detectors, etc.</p></li>
+</ul>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>I wonder if under references, we could include an ‘additional resources’ section in which we link to articles for more detail about XES or Von Hamos detectors, etc.</p>
-</div>
-<!-- #endraw -->
-</div>
+<!-- #endraw --></div>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
@@ -345,7 +349,7 @@
         
         <div class='prev-next-bottom'>
             
-    <a class='right-next' id="next-link" href="detector.html" title="next page">Detector corrections</a>
+    <a class='right-next' id="next-link" href="detector.html" title="next page">Measurement and detector corrections</a>
 
         </div>
         

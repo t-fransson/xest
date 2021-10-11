@@ -17,9 +17,6 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply['content'])
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-#########################
-# HitFinder on all states
-#########################
 def HitFinder(runs,thr,roi,fit,adu_int,print_individual):
     x    = []; y    = []; adu    = []; ndroplets    = []
     rejx = []; rejy = []; rejadu = []; rejndroplets = []
@@ -56,7 +53,6 @@ def HitFinder(runs,thr,roi,fit,adu_int,print_individual):
         rejadu = np.concatenate(rejadu); rejndroplets = rejndroplets
     else: rejx = x; rejy = y; rejadu = 0.01*adu; rejndroplets = ndroplets    
     return x,y,adu,ndroplets,[rejx,rejy,rejadu,rejndroplets]
-
 
 def HitFinder(runs,thr,roi,fit,adu_int,print_individual,bt):
     # note: does not rotate the image before identifying hits
@@ -221,10 +217,10 @@ def proj_spectrum(runs,roi,fit,adu_int,axis_para,thr,plot_proj,bt):
 
 ------------------
 
-[0;36m  File [0;32m"<ipython-input-1-7e7695daf844>"[0;36m, line [0;32m75[0m
+[0;36m  File [0;32m"<ipython-input-1-f37cf2ebdaf2>"[0;36m, line [0;32m71[0m
 [0;31m    print 'Hit rate: {:.4f}, including {:d} / {:d},'.format((float(tot_hits)/float(tot_imgs)),tot_hits,tot_imgs),'runs',runs[0],'-',runs[len(runs)-1][0m
 [0m                                                   ^[0m
 [0;31mSyntaxError[0m[0;31m:[0m invalid syntax
 
-SyntaxError: invalid syntax (<ipython-input-1-7e7695daf844>, line 75)
+SyntaxError: invalid syntax (<ipython-input-1-f37cf2ebdaf2>, line 71)
 

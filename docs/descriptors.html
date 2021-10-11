@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Descriptors &#8212; The X-ray (emission) spectroscopy toolbox</title>
+    <title>Spectrum descriptors for analysis &#8212; The X-ray (emission) spectroscopy toolbox</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet" />
   <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -55,8 +55,8 @@
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="On-site analysis" href="onsite.html" />
-    <link rel="prev" title="Sorting for hits" href="hit_sort.html" />
+    <link rel="next" title="Typical on-site analysis" href="onsite.html" />
+    <link rel="prev" title="Sorting for sample hits" href="hit_sort.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
     
@@ -101,12 +101,12 @@
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="detector.html">
-   Detector corrections
+   Measurement and detector corrections
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="droplet.html">
-   Droplet reconstruction
+   Droplet reconstruction scheme
   </a>
  </li>
 </ul>
@@ -118,27 +118,32 @@
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="raw_spec.html">
-   Isolating inelastic signal
+   Extracting raw spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="corr_spec.html">
-   Constructing final spectra
+   Constructing corrected spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="fitting.html">
+   Smoothing and curve fitting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="hit_sort.html">
-   Sorting for hits
+   Sorting for sample hits
   </a>
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   Descriptors
+   Spectrum descriptors for analysis
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="onsite.html">
-   On-site analysis
+   Typical on-site analysis
   </a>
  </li>
  <li class="toctree-l1">
@@ -310,8 +315,8 @@
         
               <div>
                 
-  <div class="section" id="descriptors">
-<h1>Descriptors<a class="headerlink" href="#descriptors" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="spectrum-descriptors-for-analysis">
+<h1>Spectrum descriptors for analysis<a class="headerlink" href="#spectrum-descriptors-for-analysis" title="Permalink to this headline">¶</a></h1>
 <p>def load_bt_para(bt):
 thr       = [3,2.0]
 if bt == ‘LR81’:
@@ -607,8 +612,8 @@ return roi,fit,thr,axis_para,adu_int</p>
         
         <div class='prev-next-bottom'>
             
-    <a class='left-prev' id="prev-link" href="hit_sort.html" title="previous page">Sorting for hits</a>
-    <a class='right-next' id="next-link" href="onsite.html" title="next page">On-site analysis</a>
+    <a class='left-prev' id="prev-link" href="hit_sort.html" title="previous page">Sorting for sample hits</a>
+    <a class='right-next' id="next-link" href="onsite.html" title="next page">Typical on-site analysis</a>
 
         </div>
         

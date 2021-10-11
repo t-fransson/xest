@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Droplet reconstruction scheme &#8212; The X-ray (emission) spectroscopy toolbox</title>
+    <title>Smoothing and curve fitting &#8212; The X-ray (emission) spectroscopy toolbox</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet" />
   <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -55,8 +55,8 @@
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Producing raw spectra" href="raw_spec.html" />
-    <link rel="prev" title="Measurement and detector corrections" href="detector.html" />
+    <link rel="next" title="Sorting for sample hits" href="hit_sort.html" />
+    <link rel="prev" title="Constructing corrected spectra" href="corr_spec.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
     
@@ -98,14 +98,14 @@
   Reducing raw data
  </span>
 </p>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="detector.html">
    Measurement and detector corrections
   </a>
  </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
+ <li class="toctree-l1">
+  <a class="reference internal" href="droplet.html">
    Droplet reconstruction scheme
   </a>
  </li>
@@ -115,10 +115,10 @@
   Data analysis
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="raw_spec.html">
-   Producing raw spectra
+   Extracting raw spectra
   </a>
  </li>
  <li class="toctree-l1">
@@ -126,8 +126,8 @@
    Constructing corrected spectra
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="fitting.html">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
    Smoothing and curve fitting
   </a>
  </li>
@@ -204,9 +204,9 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/docs/droplet.md"><button type="button"
+        <a class="dropdown-buttons" href="../_sources/docs/fitting.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.md</button></a>
+                data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
             onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
@@ -224,7 +224,7 @@
                 data-toggle="tooltip" data-placement="left" title="Source repository"><i
                     class="fab fa-github"></i>repository</button></a>
         <a class="issues-button"
-            href="https://github.com/t-fransson/xest/tree/main/issues/new?title=Issue%20on%20page%20%2Fdocs/droplet.html&body=Your%20issue%20content%20here."><button
+            href="https://github.com/t-fransson/xest/tree/main/issues/new?title=Issue%20on%20page%20%2Fdocs/fitting.html&body=Your%20issue%20content%20here."><button
                 type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
                 title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
         
@@ -240,11 +240,85 @@
 
             <!-- Launch buttons -->
 
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/t-fransson/xest/master?urlpath=tree/jbook/docs/docs/fitting.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="../_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
+
         </div>
 
         <!-- Table of contents -->
         <div class="d-none d-md-block col-md-2 bd-toc show">
             
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#smoothing-of-spectra">
+   Smoothing of spectra
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#binning">
+     Binning
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#spline">
+     Spline
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#rectangular-box-unweighted-sliding-average-smooth">
+     Rectangular / box / unweighted sliding-average smooth
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#weighted-triangular-smooth">
+     Weighted triangular smooth
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#savitzky-golay">
+     Savitzky-Golay
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#curve-fitting">
+   Curve fitting
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#profiles-lorentzian-gaussian-voigt">
+     Profiles: Lorentzian, Gaussian, Voigt
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#broadening-of-experimental-spectrum">
+     Broadening of experimental spectrum
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+            </nav>
         </div>
     </div>
 </div>
@@ -253,8 +327,61 @@
         
               <div>
                 
-  <div class="section" id="droplet-reconstruction-scheme">
-<h1>Droplet reconstruction scheme<a class="headerlink" href="#droplet-reconstruction-scheme" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="smoothing-and-curve-fitting">
+<h1>Smoothing and curve fitting<a class="headerlink" href="#smoothing-and-curve-fitting" title="Permalink to this headline">¶</a></h1>
+<p>Note that smoothing and curve fitting should be done with care. Makes things look nicer, but can miss actual observables. Check residuals and the like.</p>
+<div class="section" id="smoothing-of-spectra">
+<h2>Smoothing of spectra<a class="headerlink" href="#smoothing-of-spectra" title="Permalink to this headline">¶</a></h2>
+<p>Illustrate different smoothing schemes, plotting:</p>
+<ol class="simple">
+<li><p>0F spectra: raw, smooth, residual</p></li>
+<li><p>0F - 2F: raw, smooth, residual</p></li>
+</ol>
+<p>Can print the integral of the residual, as an illustration of the approximate error (note that this is a rough measure). Can also use the standard deviation of the residual vector(?)</p>
+<div class="section" id="binning">
+<h3>Binning<a class="headerlink" href="#binning" title="Permalink to this headline">¶</a></h3>
+<p>Just bin to lower resolution.</p>
+</div>
+<div class="section" id="spline">
+<h3>Spline<a class="headerlink" href="#spline" title="Permalink to this headline">¶</a></h3>
+<p>Spline raw can introduce articifial oscillations, and is not that suitable for illustrations. Binning and then splining can produce better results.</p>
+</div>
+<div class="section" id="rectangular-box-unweighted-sliding-average-smooth">
+<h3>Rectangular / box / unweighted sliding-average smooth<a class="headerlink" href="#rectangular-box-unweighted-sliding-average-smooth" title="Permalink to this headline">¶</a></h3>
+<p>Example: 3-point</p>
+<div class="amsmath math notranslate nohighlight" id="equation-47c110ab-5db0-4b45-ae1e-76eb849b0007">
+<span class="eqno">(2)<a class="headerlink" href="#equation-47c110ab-5db0-4b45-ae1e-76eb849b0007" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+Y_i = \frac{\sum Y_{i-1}+ Y_{i}+ Y_{i+1}}{3}
+\end{equation}\]</div>
+</div>
+<div class="section" id="weighted-triangular-smooth">
+<h3>Weighted triangular smooth<a class="headerlink" href="#weighted-triangular-smooth" title="Permalink to this headline">¶</a></h3>
+<p>Example: 5-point</p>
+<div class="amsmath math notranslate nohighlight" id="equation-4b0cc415-8ccc-44ae-b6ff-659f942ab2c9">
+<span class="eqno">(3)<a class="headerlink" href="#equation-4b0cc415-8ccc-44ae-b6ff-659f942ab2c9" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+Y_i = \frac{\sum Y_{i-2}+2Y_{i-1}+ 3Y_{i}+ 2Y_{i+1}+ Y_{i+2}}{13}
+\end{equation}\]</div>
+<p>For example, the 5-point triangular smooth above is equivalent to two passes of a 3-point rectangular smooth.</p>
+<p>In all these smooths, the width of the smooth m is chosen to be an odd integer, so that the smooth coefficients are symmetrically balanced around the central point, which is important because it preserves the x-axis position of peaks and other features in the smoothed signal.</p>
+<p>Note that we are assuming here that the x-axis intervals of the signal is uniform, that is, that the difference between the x-axis values of adjacent points is the same throughout the signal. This is technically not the case here, but the variation within a small number of pixels is small enough for the present purpose.</p>
+</div>
+<div class="section" id="savitzky-golay">
+<h3>Savitzky-Golay<a class="headerlink" href="#savitzky-golay" title="Permalink to this headline">¶</a></h3>
+<p>The Savitzky-Golay smooth is based on the least-squares fitting of polynomials to segments of the data. Compared to the sliding-average smooths of the same width, the Savitzky-Golay smooth is less effective at reducing noise, but more effective at retaining the shape of the original signal.</p>
+<ul class="simple">
+<li><p>Illustrate different smoothing widths</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="curve-fitting">
+<h2>Curve fitting<a class="headerlink" href="#curve-fitting" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="profiles-lorentzian-gaussian-voigt">
+<h3>Profiles: Lorentzian, Gaussian, Voigt<a class="headerlink" href="#profiles-lorentzian-gaussian-voigt" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="broadening-of-experimental-spectrum">
+<h3>Broadening of experimental spectrum<a class="headerlink" href="#broadening-of-experimental-spectrum" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
 </div>
 
     <script type="text/x-thebe-config">
@@ -282,8 +409,8 @@
         
         <div class='prev-next-bottom'>
             
-    <a class='left-prev' id="prev-link" href="detector.html" title="previous page">Measurement and detector corrections</a>
-    <a class='right-next' id="next-link" href="raw_spec.html" title="next page">Producing raw spectra</a>
+    <a class='left-prev' id="prev-link" href="corr_spec.html" title="previous page">Constructing corrected spectra</a>
+    <a class='right-next' id="next-link" href="hit_sort.html" title="next page">Sorting for sample hits</a>
 
         </div>
         

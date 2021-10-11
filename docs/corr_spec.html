@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Constructing final spectra &#8212; The X-ray (emission) spectroscopy toolbox</title>
+    <title>Correction of spectra &#8212; The X-ray (emission) spectroscopy toolbox</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet" />
   <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -55,8 +55,8 @@
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Sorting for hits" href="hit_sort.html" />
-    <link rel="prev" title="Isolating inelastic signal" href="raw_spec.html" />
+    <link rel="next" title="Smoothing and curve fitting" href="fitting.html" />
+    <link rel="prev" title="Extracting raw spectra" href="raw_spec.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
     
@@ -101,12 +101,12 @@
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="detector.html">
-   Detector corrections
+   Measurement and detector corrections
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="droplet.html">
-   Droplet reconstruction
+   Droplet reconstruction scheme
   </a>
  </li>
 </ul>
@@ -118,27 +118,32 @@
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="raw_spec.html">
-   Isolating inelastic signal
+   Extracting raw spectra
   </a>
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   Constructing final spectra
+   Correction of spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="fitting.html">
+   Smoothing and curve fitting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="hit_sort.html">
-   Sorting for hits
+   Sorting for sample hits
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="descriptors.html">
-   Descriptors
+   Spectrum descriptors for analysis
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="onsite.html">
-   On-site analysis
+   Typical on-site analysis
   </a>
  </li>
  <li class="toctree-l1">
@@ -257,6 +262,56 @@
         <!-- Table of contents -->
         <div class="d-none d-md-block col-md-2 bd-toc show">
             
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#background-correction">
+   Background correction
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pulling-down-to-zero">
+     Pulling down to zero
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#remove-footprint">
+     Remove footprint
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#raw-by-raw-interpolation">
+     Raw-by-raw interpolation
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#interpolating-over-detector-gap">
+   Interpolating over detector gap
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#energy-calibration">
+   Energy calibration
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#producing-corrected-spectra">
+   Producing corrected spectra
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#signal-interval-and-multi-photon-hits">
+   Signal interval and multi-photon hits
+  </a>
+ </li>
+</ul>
+
+            </nav>
         </div>
     </div>
 </div>
@@ -265,8 +320,9 @@
         
               <div>
                 
-  <div class="section" id="constructing-final-spectra">
-<h1>Constructing final spectra<a class="headerlink" href="#constructing-final-spectra" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="correction-of-spectra">
+<h1>Correction of spectra<a class="headerlink" href="#correction-of-spectra" title="Permalink to this headline">¶</a></h1>
+<p><em>Loading functions:</em></p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">h5py</span>
@@ -380,6 +436,12 @@
 </div>
 </div>
 </div>
+<p>Load raw image which is to be:</p>
+<ol class="simple">
+<li><p>Corrected for background signal</p></li>
+<li><p>Corrected for detector gap</p></li>
+<li><p>Given the energy axis</p></li>
+</ol>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">runs</span>    <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -393,6 +455,81 @@
 </div>
 </div>
 </div>
+<p>Without any corrections, the spectrum and spatial projection looks as follows:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Spectrum&#39;</span><span class="p">)</span>
+<span class="n">xes_spec</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xes_spec</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Spatial projection&#39;</span><span class="p">)</span>
+<span class="n">spat_spec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spat_spec</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/corr_spec_5_0.png" src="../_images/corr_spec_5_0.png" />
+</div>
+</div>
+<div class="section" id="background-correction">
+<h2>Background correction<a class="headerlink" href="#background-correction" title="Permalink to this headline">¶</a></h2>
+<p>The first correction we will discuss is the removal of background signal, or noise. With the ADU interval selected, noise due to thermal signal is removed, and remaining noise is largely due to elastic scattering, and if the shielding is appropriate this will likely be relatively low and quite homogenous over the detector. The protocols discussed here will work best for this scenario, and, <em>e.g.</em>, a background signal with a hotspot that is in the vicinity of the inelastic signal will be harder to consider with these approaches.</p>
+<div class="section" id="pulling-down-to-zero">
+<h3>Pulling down to zero<a class="headerlink" href="#pulling-down-to-zero" title="Permalink to this headline">¶</a></h3>
+<p>The most straight-forward background subtraction is to simply bring the signal at some defined part of the spectrum down to zero (or any desired value). Here we illustrate this by putting the 600-650 pixel region to zero:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># bring to zero</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>This approach is straightforward, but it suffers from a number of issues:</p>
+<ul class="simple">
+<li><p>Assuming that the physical signal is zero in this region, thus disregarding any spectrum tails which will overlap with this region</p></li>
+<li><p>Assuming that the background signal is homogenous over the entire spectrum region, which is quite unlikely.</p></li>
+<li><p>It will result in negative signal at some energies, which is physically incorrect.</p></li>
+</ul>
+</div>
+<div class="section" id="remove-footprint">
+<h3>Remove footprint<a class="headerlink" href="#remove-footprint" title="Permalink to this headline">¶</a></h3>
+<p>Another approach is to take the signal footprint at some other part of the detector and subtract this from the ROI:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># remove footprint</span>
+<span class="c1"># </span>
+<span class="c1">#</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>This again has some issues:</p>
+<ul class="simple">
+<li><p>While it doesn’t require the background signal to be homogenous over the energy-dispersive direction, it need it to be relatively homogenous over the spatial direction.</p></li>
+<li><p>It requires that the detector corretions (especially the gain) is accurate. This assumption is hard to avoid and is present in the other corrections as well, but it is particularly present here.</p></li>
+</ul>
+</div>
+<div class="section" id="raw-by-raw-interpolation">
+<h3>Raw-by-raw interpolation<a class="headerlink" href="#raw-by-raw-interpolation" title="Permalink to this headline">¶</a></h3>
+<p>Instead of taking the footprint at one side of the ROI (or potentially both sides), an alternative is to perform a row-by-row interpolation of the background signal over the ROI region. This requires the definition of the ROI as well as the interpolation region, and interpolation can use, <em>e.g.</em>, polynomials of arbitrary order.</p>
+<ol class="simple">
+<li><p>Define the interpolation region. This should preferably be a relatively flat region of the spatial projection, and not contail any significant signal tails from the spectrometer crystals.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># interpolation region</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="simple">
+<li><p>Interpolate using polynomial of desired order</p></li>
+</ol>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">remove_background_order</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
@@ -430,9 +567,10 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/corr_spec_3_0.png" src="../_images/corr_spec_3_0.png" />
+<img alt="../_images/corr_spec_13_0.png" src="../_images/corr_spec_13_0.png" />
 </div>
 </div>
+<p>In this case we see that a 2:nd or 3:rd order polynomial yields large fluctuation, as the background is quite noisy and the interpolation can thus be a bit overfitted. Our experiences are that a first-order fit is most stable, and as such xest has the following as default background subtraction function:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">remove_background</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
@@ -447,24 +585,18 @@
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># bring to zero</span>
-<span class="c1">#</span>
-<span class="c1">#</span>
-</pre></div>
+<p>We acknowledge that this function is not perfect, and it can have problems in particular with:</p>
+<ul class="simple">
+<li><p>Noisy signal</p></li>
+<li><p>Diagonally spread background, as this assumes relative homogenuity in the spatial direction</p></li>
+</ul>
+<p>One possibility that could account for noisy signal as well as <strong>some</strong> diagonal signal is to account for the signal for neighbouring rows in the interpolation. We refrain from doing so as a standard.</p>
 </div>
 </div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># remove footprint</span>
-<span class="c1"># </span>
-<span class="c1">#</span>
-</pre></div>
-</div>
-</div>
-</div>
+<div class="section" id="interpolating-over-detector-gap">
+<h2>Interpolating over detector gap<a class="headerlink" href="#interpolating-over-detector-gap" title="Permalink to this headline">¶</a></h2>
+<p>Depending on the detector used, it is possible that there will be a gap between detector plates which will lead to a region without any detected signal. In the data considered here, an epix100 detector with 4 panels was used, leading to gaps in both the spatial and energy-dispersive direction.</p>
+<p>The gap in the spatial direction can (and most definitely <strong>should</strong>) be avoided by moving the detector, and it should be placed in such a matter that it doesn’t interfer with any background correction scheme. The gap in the energy-dispersive direction is often more difficult to remove, as the spectrum region resolved may be rather extensive, and the detector position can be limited by other components of the experimental set-up. As such, a scheme of interpolating over this gap can be applied, and we here favour a second-order polynomial fitted of over it:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># interpolation</span>
@@ -482,6 +614,16 @@
 </div>
 </div>
 </div>
+<p>Here a region for fittin has to be decided, as well as the order of the polynomial. Our experiences is that the above combination is most suitable for our experiments, but other schemes may be more appropriate. Note that any interpolation can only be approximate, and should be done with some care. Ideally, the gap should be far away from the peak max, in order to minimize any potential artifact from interfering with the main spectrum region of interest.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the detector image has to be rotated, the interpolation region must include all parts of the projected spectrum which overlaps with any part of the gap. This means that it may be appropriate to add a few extra pixels, as it can be hard to judge if one pixel has a lower signal due to rotation, or just as a result of the general noise.</p>
+</div>
+</div>
+<div class="section" id="energy-calibration">
+<h2>Energy calibration<a class="headerlink" href="#energy-calibration" title="Permalink to this headline">¶</a></h2>
+<p>Ensuring correct vertical and horizontal distances between the sample, spectrometer, and detector will typically only work so far, so additional fine-tuning will be needed. For the measurements described here, calibration is primarily done by use of reference samples (MnCl<span class="math notranslate nohighlight">\(_2\)</span>), as well as by ensuring good correspondance between the 0F spectra collected over different beamtimes. The latter is largely added as only using reference samples yield a number of parameters which works approximately equally well, and adding the 0F will narrow down the potential combinations more.</p>
+<p>With a von Hamos spectrometer, the calibration is decided by the lattice constant of the crystal, horizontal/vertical (depending on beam polarization) set-off A, and radius of the spectrometer R. Furthermore, the pixel size is needed. With this, the calibration of the experiment discussed is is given as:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># energy calibration</span>
@@ -489,7 +631,7 @@
 <span class="c1">#</span>
 <span class="k">def</span> <span class="nf">energy_axis</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">R</span><span class="p">,</span><span class="n">bt</span><span class="p">):</span>
     <span class="n">d</span> <span class="o">=</span> <span class="mf">0.9601</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">bt</span> <span class="o">==</span> <span class="s1">&#39;LR81&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">bt</span> <span class="o">==</span> <span class="s1">&#39;instruction&#39;</span><span class="p">):</span>
         <span class="n">pix</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">;</span> <span class="n">l</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">709</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="n">l</span> <span class="o">*=</span> <span class="n">pix</span>
     <span class="n">ll</span> <span class="o">=</span> <span class="n">l</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">l</span><span class="p">))</span> <span class="o">/</span> <span class="mi">4</span>
@@ -498,61 +640,23 @@
     <span class="k">return</span> <span class="n">xaxis</span>
 
 <span class="n">axis_para</span> <span class="o">=</span> <span class="p">[</span><span class="mf">50.72</span><span class="p">,</span><span class="mf">498.21</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">proj_spectrum_v1</span>
-<span class="k">if</span> <span class="n">axis_para</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
-    <span class="n">xaxis</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="n">xaxis</span> <span class="o">=</span> <span class="n">energy_axis</span><span class="p">(</span><span class="n">axis_para</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">axis_para</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">bt</span><span class="p">)</span>
-        
-<span class="n">check</span> <span class="k">with</span> <span class="n">different</span> <span class="n">ADU</span> <span class="n">intervals</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">  File</span><span class="nn"> &quot;&lt;ipython-input-9-9e844964363b&gt;&quot;</span><span class="gt">, line </span><span class="mi">7</span>
-    <span class="n">check</span> <span class="k">with</span> <span class="n">different</span> <span class="n">ADU</span> <span class="n">intervals</span>
-             <span class="o">^</span>
-<span class="ne">SyntaxError</span>: invalid syntax
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">runs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
-<span class="n">ax0</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Spatial projection&#39;</span><span class="p">)</span>
-<span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Energy-dispersive projection&#39;</span><span class="p">)</span>
 
-<span class="n">adu_ints</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">102.0</span><span class="p">,</span><span class="mf">117.0</span><span class="p">],[</span><span class="mf">97.0</span><span class="p">,</span><span class="mf">123.0</span><span class="p">],[</span><span class="mf">92.0</span><span class="p">,</span><span class="mf">128.0</span><span class="p">]]</span>
-<span class="k">for</span> <span class="n">adu_int</span> <span class="ow">in</span> <span class="n">adu_ints</span><span class="p">:</span>
-    <span class="n">spat_spec</span><span class="p">,</span><span class="n">xes_spec</span> <span class="o">=</span> <span class="n">plot_raw</span><span class="p">(</span><span class="n">runs</span><span class="p">,</span><span class="n">roi</span><span class="p">,</span><span class="n">adu_int</span><span class="p">,</span><span class="kc">False</span><span class="p">,</span><span class="n">bt</span><span class="p">)</span>
-    <span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spat_spec</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">spat_spec</span><span class="p">))</span>
-    <span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xes_spec</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">xes_spec</span><span class="p">))</span>
-    
-<span class="n">ax0</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">((</span><span class="n">roi</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span><span class="n">roi</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="mi">50</span><span class="p">))</span>
-<span class="n">ax0</span><span class="o">.</span><span class="n">legend</span><span class="p">((</span><span class="n">adu_ints</span><span class="p">))</span>
-<span class="n">ax0</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Signal / no. shots&#39;</span><span class="p">)</span>
-<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Signal / no. shots&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="c1"># left: spectrum without energy</span>
+
+<span class="c1"># left: spectrum with energy</span>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Looking at runs 1-6 from beamtime &#39;instruction&#39;, with 6.33e+04 shots.
-Looking at runs 1-6 from beamtime &#39;instruction&#39;, with 6.33e+04 shots.
-Looking at runs 1-6 from beamtime &#39;instruction&#39;, with 6.33e+04 shots.
-</pre></div>
-</div>
-<img alt="../_images/corr_spec_10_1.png" src="../_images/corr_spec_10_1.png" />
 </div>
 </div>
+<div class="section" id="producing-corrected-spectra">
+<h2>Producing corrected spectra<a class="headerlink" href="#producing-corrected-spectra" title="Permalink to this headline">¶</a></h2>
+<p>A function for producing the final spectrum is thus provided. This will use:</p>
+<ol class="simple">
+<li><p>A first-order row-by-row background correction</p></li>
+<li><p>A second-order gap interpolation</p></li>
+</ol>
+<p>Furthermore, it can either provide an energy-axis in eV or pixel number, and it can plot the resulting projections if so desired.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">proj_spectrum</span><span class="p">(</span><span class="n">runs</span><span class="p">,</span><span class="n">roi</span><span class="p">,</span><span class="n">fit</span><span class="p">,</span><span class="n">adu_int</span><span class="p">,</span><span class="n">axis_para</span><span class="p">,</span><span class="n">thr</span><span class="p">,</span><span class="n">plot_proj</span><span class="p">,</span><span class="n">bt</span><span class="p">):</span>
@@ -646,6 +750,41 @@ Looking at runs 1-6 from beamtime &#39;instruction&#39;, with 6.33e+04 shots.
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">  File</span><span class="nn"> &quot;&lt;ipython-input-11-18c3fe161a39&gt;&quot;</span><span class="gt">, line </span><span class="mi">8</span>
+    <span class="nb">print</span> <span class="s1">&#39;Looking at data from beamtime&#39;</span><span class="p">,</span><span class="n">bt</span><span class="p">,</span><span class="s1">&#39;with&#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">ndroplets</span><span class="p">),</span><span class="s1">&#39;shots.&#39;</span>
+                                        <span class="o">^</span>
+<span class="ne">SyntaxError</span>: invalid syntax
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="signal-interval-and-multi-photon-hits">
+<h2>Signal interval and multi-photon hits<a class="headerlink" href="#signal-interval-and-multi-photon-hits" title="Permalink to this headline">¶</a></h2>
+<p>With this, we now return to the question of adopted signal interval and multi-photon hits:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adu_ints</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">102.0</span><span class="p">,</span><span class="mf">117.0</span><span class="p">],[</span><span class="mf">97.0</span><span class="p">,</span><span class="mf">123.0</span><span class="p">],[</span><span class="mf">92.0</span><span class="p">,</span><span class="mf">128.0</span><span class="p">]]</span>
+<span class="k">for</span> <span class="n">adu_int</span> <span class="ow">in</span> <span class="n">adu_ints</span><span class="p">:</span>
+    <span class="n">spat_spec</span><span class="p">,</span><span class="n">xes_spec</span> <span class="o">=</span> <span class="n">plot_raw</span><span class="p">(</span><span class="n">runs</span><span class="p">,</span><span class="n">roi</span><span class="p">,</span><span class="n">adu_int</span><span class="p">,</span><span class="kc">False</span><span class="p">,</span><span class="n">bt</span><span class="p">)</span>
+    <span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spat_spec</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">spat_spec</span><span class="p">))</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xes_spec</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">xes_spec</span><span class="p">))</span>
+
+<span class="n">proj_spectrum_v1</span>
+<span class="k">if</span> <span class="n">axis_para</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+    <span class="n">xaxis</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">xaxis</span> <span class="o">=</span> <span class="n">energy_axis</span><span class="p">(</span><span class="n">axis_para</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">axis_para</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">bt</span><span class="p">)</span>
+        
+<span class="n">check</span> <span class="k">with</span> <span class="n">different</span> <span class="n">ADU</span> <span class="n">intervals</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note that the difference…</p>
+<p>And for multi-photon hits:</p>
+<p>Incling two-photon hits here seems to work well enough.</p>
 </div>
 </div>
 
@@ -674,8 +813,8 @@ Looking at runs 1-6 from beamtime &#39;instruction&#39;, with 6.33e+04 shots.
         
         <div class='prev-next-bottom'>
             
-    <a class='left-prev' id="prev-link" href="raw_spec.html" title="previous page">Isolating inelastic signal</a>
-    <a class='right-next' id="next-link" href="hit_sort.html" title="next page">Sorting for hits</a>
+    <a class='left-prev' id="prev-link" href="raw_spec.html" title="previous page">Extracting raw spectra</a>
+    <a class='right-next' id="next-link" href="fitting.html" title="next page">Smoothing and curve fitting</a>
 
         </div>
         

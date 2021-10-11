@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sorting for hits &#8212; The X-ray (emission) spectroscopy toolbox</title>
+    <title>Sorting for sample hits &#8212; The X-ray (emission) spectroscopy toolbox</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet" />
   <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -55,8 +55,8 @@
     <link rel="shortcut icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Descriptors" href="descriptors.html" />
-    <link rel="prev" title="Constructing final spectra" href="corr_spec.html" />
+    <link rel="next" title="Spectrum descriptors for analysis" href="descriptors.html" />
+    <link rel="prev" title="Smoothing and curve fitting" href="fitting.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
     
@@ -101,12 +101,12 @@
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="detector.html">
-   Detector corrections
+   Measurement and detector corrections
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="droplet.html">
-   Droplet reconstruction
+   Droplet reconstruction scheme
   </a>
  </li>
 </ul>
@@ -118,27 +118,32 @@
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="raw_spec.html">
-   Isolating inelastic signal
+   Producing raw spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="corr_spec.html">
-   Constructing final spectra
+   Constructing corrected spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="fitting.html">
+   Smoothing and curve fitting
   </a>
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   Sorting for hits
+   Sorting for sample hits
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="descriptors.html">
-   Descriptors
+   Spectrum descriptors for analysis
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="onsite.html">
-   On-site analysis
+   Typical on-site analysis
   </a>
  </li>
  <li class="toctree-l1">
@@ -283,8 +288,8 @@
         
               <div>
                 
-  <div class="section" id="sorting-for-hits">
-<h1>Sorting for hits<a class="headerlink" href="#sorting-for-hits" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="sorting-for-sample-hits">
+<h1>Sorting for sample hits<a class="headerlink" href="#sorting-for-sample-hits" title="Permalink to this headline">¶</a></h1>
 <p>Sort for hits: test different schemes and compare hit rate, projections, final spectra</p>
 <ul class="simple">
 <li><p>sort away weak pulses (gmd)</p></li>
@@ -301,10 +306,7 @@
 <p>Two thresholds</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#########################</span>
-<span class="c1"># HitFinder on all states</span>
-<span class="c1">#########################</span>
-<span class="k">def</span> <span class="nf">HitFinder</span><span class="p">(</span><span class="n">runs</span><span class="p">,</span><span class="n">thr</span><span class="p">,</span><span class="n">roi</span><span class="p">,</span><span class="n">fit</span><span class="p">,</span><span class="n">adu_int</span><span class="p">,</span><span class="n">print_individual</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">HitFinder</span><span class="p">(</span><span class="n">runs</span><span class="p">,</span><span class="n">thr</span><span class="p">,</span><span class="n">roi</span><span class="p">,</span><span class="n">fit</span><span class="p">,</span><span class="n">adu_int</span><span class="p">,</span><span class="n">print_individual</span><span class="p">):</span>
     <span class="n">x</span>    <span class="o">=</span> <span class="p">[];</span> <span class="n">y</span>    <span class="o">=</span> <span class="p">[];</span> <span class="n">adu</span>    <span class="o">=</span> <span class="p">[];</span> <span class="n">ndroplets</span>    <span class="o">=</span> <span class="p">[]</span>
     <span class="n">rejx</span> <span class="o">=</span> <span class="p">[];</span> <span class="n">rejy</span> <span class="o">=</span> <span class="p">[];</span> <span class="n">rejadu</span> <span class="o">=</span> <span class="p">[];</span> <span class="n">rejndroplets</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">thrrat</span> <span class="o">=</span> <span class="n">thr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">roi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">roi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">fit</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">fit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">fit</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">-</span><span class="n">fit</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
@@ -340,7 +342,6 @@
         <span class="n">rejadu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">rejadu</span><span class="p">);</span> <span class="n">rejndroplets</span> <span class="o">=</span> <span class="n">rejndroplets</span>
     <span class="k">else</span><span class="p">:</span> <span class="n">rejx</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span> <span class="n">rejy</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span> <span class="n">rejadu</span> <span class="o">=</span> <span class="mf">0.01</span><span class="o">*</span><span class="n">adu</span><span class="p">;</span> <span class="n">rejndroplets</span> <span class="o">=</span> <span class="n">ndroplets</span>    
     <span class="k">return</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">adu</span><span class="p">,</span><span class="n">ndroplets</span><span class="p">,[</span><span class="n">rejx</span><span class="p">,</span><span class="n">rejy</span><span class="p">,</span><span class="n">rejadu</span><span class="p">,</span><span class="n">rejndroplets</span><span class="p">]</span>
-
 
 <span class="k">def</span> <span class="nf">HitFinder</span><span class="p">(</span><span class="n">runs</span><span class="p">,</span><span class="n">thr</span><span class="p">,</span><span class="n">roi</span><span class="p">,</span><span class="n">fit</span><span class="p">,</span><span class="n">adu_int</span><span class="p">,</span><span class="n">print_individual</span><span class="p">,</span><span class="n">bt</span><span class="p">):</span>
     <span class="c1"># note: does not rotate the image before identifying hits</span>
@@ -506,7 +507,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">  File</span><span class="nn"> &quot;&lt;ipython-input-1-7e7695daf844&gt;&quot;</span><span class="gt">, line </span><span class="mi">75</span>
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">  File</span><span class="nn"> &quot;&lt;ipython-input-1-f37cf2ebdaf2&gt;&quot;</span><span class="gt">, line </span><span class="mi">71</span>
     <span class="nb">print</span> <span class="s1">&#39;Hit rate: </span><span class="si">{:.4f}</span><span class="s1">, including </span><span class="si">{:d}</span><span class="s1"> / </span><span class="si">{:d}</span><span class="s1">,&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">tot_hits</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">tot_imgs</span><span class="p">)),</span><span class="n">tot_hits</span><span class="p">,</span><span class="n">tot_imgs</span><span class="p">),</span><span class="s1">&#39;runs&#39;</span><span class="p">,</span><span class="n">runs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="s1">&#39;-&#39;</span><span class="p">,</span><span class="n">runs</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">runs</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                                                    <span class="o">^</span>
 <span class="ne">SyntaxError</span>: invalid syntax
@@ -804,8 +805,8 @@
         
         <div class='prev-next-bottom'>
             
-    <a class='left-prev' id="prev-link" href="corr_spec.html" title="previous page">Constructing final spectra</a>
-    <a class='right-next' id="next-link" href="descriptors.html" title="next page">Descriptors</a>
+    <a class='left-prev' id="prev-link" href="fitting.html" title="previous page">Smoothing and curve fitting</a>
+    <a class='right-next' id="next-link" href="descriptors.html" title="next page">Spectrum descriptors for analysis</a>
 
         </div>
         

@@ -1,1 +1,1 @@
-# Droplet reconstruction
+# Droplet reconstruction scheme

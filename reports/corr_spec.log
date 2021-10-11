@@ -17,19 +17,100 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply['content'])
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-proj_spectrum_v1
-if axis_para == False:
-    xaxis = False
-else:
-    xaxis = energy_axis(axis_para[0],axis_para[1],bt)
-        
-check with different ADU intervals
+def proj_spectrum(runs,roi,fit,adu_int,axis_para,thr,plot_proj,bt):
+    if axis_para == False:
+        xaxis = False
+    else:
+        xaxis = energy_axis(axis_para[0],axis_para[1],bt)
+    if thr == False:
+        x,y,adu,ndroplets,gmd = load_runs(runs,bt)
+        print 'Looking at data from beamtime',bt,'with',len(ndroplets),'shots.'
+        img,vmin,vmax = create_img(runs,x,y,adu,adu_int,adu_int[2],bt)
+        if bt == 'LV30':
+            img[:400,:] = 0.0
+        elif bt == 'LS10':
+            img[550:,:] = 0.0; img[:,:150] = 0.0; img[:,250:] = 0.0
+        cor_spec = np.sum(remove_background(img, fit[0], fit[1], fit[2], fit[3])[:,roi[0]:roi[1]], axis=1)
+        interpolate_epix_gap(cor_spec,bt)
+        if plot_proj:
+            tmp_spat = np.sum(img, axis=0)
+            cor_spat = np.sum(remove_background(img, fit[0], fit[1], fit[2], fit[3]), axis=0)
+            tmp_spec = np.sum(img[:,roi[0]:roi[1]], axis=1)
+    else:
+        x,y,adu,ndroplets,gmd,rej,hitinfo = HitFinder(runs,thr,roi,fit,adu_int,False,bt)
+        img,vmin,vmax = create_img(runs,x,y,adu,adu_int,adu_int[2],bt)
+        if bt == 'LV30':
+            img[:400,:] = 0.0
+        elif bt == 'LS10':
+            img[550:,:] = 0.0; img[:,:150] = 0.0; img[:,250:] = 0.0
+        cor_spec = np.sum(remove_background(img, fit[0], fit[1], fit[2], fit[3])[:,roi[0]:roi[1]], axis=1)
+        interpolate_epix_gap(cor_spec,bt)
+        if plot_proj:
+            x_all,y_all,adu_all,ndroplets_all,gmd_all = load_runs(runs,bt)
+            img_all,vmin,vmax = create_img(runs,x_all,y_all,adu_all,adu_int,adu_int[2],bt)
+            cor_spat = np.sum(img, axis=0)
+            tmp_spat = np.sum(img_all, axis=0)
+            tmp_spec = np.sum(remove_background(img_all, fit[0], fit[1], fit[2], fit[3])[:,roi[0]:roi[1]], axis=1)
+            interpolate_epix_gap(tmp_spec,bt)
+    if plot_proj:
+        fig = plt.figure(figsize=(12,3))
+        ################
+        plt.subplot(141); plt.title('Detector image',fontsize=9)
+        plt.imshow(img, origin='lower',vmin=vmin, vmax=vmax,aspect='auto')
+        plt.plot([roi[0],roi[0]],[roi[2],roi[3]],'w-'); plt.plot([roi[1],roi[1]],[roi[2],roi[3]],'w-')
+        plt.plot([fit[0],fit[0]],[roi[2],roi[3]],'w--');plt.plot([fit[1],fit[1]],[roi[2],roi[3]],'w--')
+        plt.plot([fit[2],fit[2]],[roi[2],roi[3]],'w--');plt.plot([fit[3],fit[3]],[roi[2],roi[3]],'w--')
+        plt.xlim((fit[0]-20,fit[3]+20))
+        plt.ylim((roi[2],roi[3]))
+        plt.xticks(fontsize=8); plt.yticks(fontsize=9)
+        ################
+        plt.subplot(142); plt.title('Spatial projection',fontsize=9)
+        plt.plot(tmp_spat/len(ndroplets))
+        plt.plot(cor_spat/len(ndroplets),'r')
+        plt.plot((tmp_spat-cor_spat)/len(ndroplets),'k')
+        ylims = [0,0.8*max(tmp_spat)/len(ndroplets)]
+        plt.plot([roi[0],roi[0]],ylims,'g');  plt.plot([roi[1],roi[1]],ylims,'g')
+        plt.plot([fit[0],fit[0]],ylims,'g--');plt.plot([fit[1],fit[1]],ylims,'g--')
+        plt.plot([fit[2],fit[2]],ylims,'g--');plt.plot([fit[3],fit[3]],ylims,'g--')
+        plt.xlim((fit[0]-20,fit[3]+20))
+        plt.ylim((0,1.05*max(tmp_spat)/len(ndroplets)))
+        plt.xticks(fontsize=9); plt.yticks(fontsize=9)
+        plt.ylabel('Signal / no. shots',fontsize=9)
+        ################
+        plt.subplot(143); plt.title('Spectrum',fontsize=9)
+        if axis_para == False:
+            plt.plot(tmp_spec/len(ndroplets))
+            plt.plot(cor_spec/len(ndroplets),'r')
+            plt.plot((tmp_spec-cor_spec)/len(ndroplets),'k')
+        else:
+            plt.plot(xaxis,tmp_spec/len(ndroplets))
+            plt.plot(xaxis,cor_spec/len(ndroplets),'r')
+            plt.plot(xaxis,(tmp_spec-cor_spec)/len(ndroplets),'k')
+            plt.xlim(6480,6500)
+        if thr == False: plt.legend(('Raw','Corr.','Bkgrd'),fontsize=9,loc='upper left')
+        else:            plt.legend(('All','Hits','Diff.'),fontsize=9,loc='upper left')
+        plt.ylabel('Signal / no. shots',fontsize=9)
+        plt.ylim((0,1.05*max(tmp_spec)/len(ndroplets)))
+        plt.xticks(fontsize=9); plt.yticks(fontsize=9)
+        ################
+        plt.subplot(144); plt.title('Final spectrum',fontsize=9)        
+        if axis_para == False:
+            plt.plot(cor_spec,'r')
+        else:
+            plt.plot(xaxis,cor_spec,'r')
+            plt.xlim(6480,6500)
+        plt.ylabel('Total intensity [counts]',fontsize=9)
+        plt.ylim((0,1.05*max(cor_spec)))
+        plt.xticks(fontsize=8); plt.yticks(fontsize=9)
+        ################
+        plt.tight_layout()
+    return xaxis,cor_spec
 ------------------
 
-[0;36m  File [0;32m"<ipython-input-9-9e844964363b>"[0;36m, line [0;32m7[0m
-[0;31m    check with different ADU intervals[0m
-[0m             ^[0m
+[0;36m  File [0;32m"<ipython-input-11-18c3fe161a39>"[0;36m, line [0;32m8[0m
+[0;31m    print 'Looking at data from beamtime',bt,'with',len(ndroplets),'shots.'[0m
+[0m                                        ^[0m
 [0;31mSyntaxError[0m[0;31m:[0m invalid syntax
 
-SyntaxError: invalid syntax (<ipython-input-9-9e844964363b>, line 7)
+SyntaxError: invalid syntax (<ipython-input-11-18c3fe161a39>, line 8)
 
